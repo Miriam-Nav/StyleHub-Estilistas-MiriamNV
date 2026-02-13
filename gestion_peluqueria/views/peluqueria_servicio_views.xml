@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Servicio Lista -->
+    <record id="view_peluqueria_servicio_list" model="ir.ui.view">
+        <field name="name">peluqueria.servicio.list</field>
+        <field name="model">peluqueria.servicio</field>
+        <field name="arch" type="xml">
+            <list string="Catálogo de Servicios">
+                <field name="imagen" widget="image" optional="show"/>
+                <field name="name"/>
+                <field name="duracion" widget="float_time"/>
+                <field name="precio_base"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Servicio Form -->
+    <record id="view_peluqueria_servicio_form" model="ir.ui.view">
+        <field name="name">peluqueria.servicio.form</field>
+        <field name="model">peluqueria.servicio</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="imagen" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="ej: Corte Caballero, Tinte Completo..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información del Servicio">
+                            <field name="duracion" widget="float_time"/>
+                            <field name="precio_base" widget="monetary"/>
+                        </group>
+                        <group string="Detalles">
+                            <field name="descripcion" placeholder="Descripción opcional del servicio..." nolabel="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_peluqueria_servicio_kanban" model="ir.ui.view">
+        <field name="name">peluqueria.servicio.kanban</field>
+        <field name="model">peluqueria.servicio</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="precio_base"/>
+                <field name="duracion"/>
+                <field name="imagen"/>
+                <templates>
+                    <!-- Diseño -->
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('peluqueria.servicio', 'imagen', record.id.raw_value)" class="o_image_64_cover"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                                <ul>
+                                    <li>
+                                        <i class="fa fa-clock-o me-2"/> 
+                                        <field name="duracion" widget="float_time"/>
+                                    </li>
+                                    <!-- Resalta en verde -->
+                                    <li class="text-success">
+                                        <strong>
+                                            <i class="fa fa-eur me-2"/> 
+                                            <field name="precio_base"/>
+                                        </strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

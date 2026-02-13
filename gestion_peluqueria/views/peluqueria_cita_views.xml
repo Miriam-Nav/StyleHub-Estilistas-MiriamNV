@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vista Cita Lista -->
+    <record id="view_peluqueria_cita_list" model="ir.ui.view">
+        <field name="name">peluqueria.cita.list</field>
+        <field name="model">peluqueria.cita</field>
+        <field name="arch" type="xml">
+            <list decoration-info="estado_cita == 'confirmada'" 
+                decoration-success="estado_cita == 'realizada'" 
+                decoration-muted="estado_cita == 'cancelada'">
+                
+                <field name="fecha_inicio" string="Fecha y Hora"/>
+                <field name="cliente_id"/>
+                <field name="estilista_id" optional="show"/> 
+                <field name="precio_total" sum="Total Recaudado" widget="monetary"/>
+                <field name="estado_cita" widget="badge" 
+                    decoration-info="estado_cita == 'confirmada'" 
+                    decoration-success="estado_cita == 'realizada'"
+                    decoration-danger="estado_cita == 'cancelada'"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Vista Cita Calendario -->
+    <record id="view_peluqueria_cita_calendar" model="ir.ui.view">
+        <field name="name">peluqueria.cita.calendar</field>
+        <field name="model">peluqueria.cita</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda StyleHub" date_start="fecha_inicio" date_stop="fecha_fin" 
+                color="color_agenda" quick_create="0">
+                <field name="servicio_linea_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field class="text-success" name="precio_total"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Vista Cita Kanban -->
+    <record id="view_peluqueria_cita_kanban" model="ir.ui.view">
+        <field name="name">peluqueria.cita.kanban</field>
+        <field name="model">peluqueria.cita</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="estado_cita" class="o_kanban_small_column" quick_create="0">
+                <field name="estado_cita"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <strong class="o_kanban_record_title">
+                                    <field name="cliente_id"/>
+                                </strong>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div><field name="estilista_id"/></div>
+                                <div class="text-muted"><field name="fecha_inicio"/></div>
+                            </div>
+                            <div class="o_kanban_record_bottom">  
+                                <div class="oe_kanban_bottom_left">
+                                    <strong class="text-success">
+                                        <i class="fa fa-eur me-1" title="Precio"/> 
+                                        <field name="precio_total"/>
+                                    </strong>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="estado_cita" widget="label_selection" 
+                                        options="{'classes': {'borrador': 'default', 'confirmada': 'info', 'realizada': 'success', 'cancelada': 'danger'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Cita Form -->
+    <record id="view_cita_form" model="ir.ui.view">
+        <field name="name">cita.form</field>
+        <field name="model">peluqueria.cita</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirmar" string="Confirmar Cita" 
+                            type="object" class="oe_highlight"
+                            invisible="estado_cita != 'borrador'"/>
+                    <button name="action_finalizar" string="Finalizar Trabajo" 
+                            type="object" class="oe_highlight"
+                            invisible="estado_cita != 'confirmada'"/>
+                    <button name="action_cancelar" string="Cancelar" 
+                            type="object"
+                            invisible="estado_cita in ['realizada', 'cancelada']"/>
+                    
+                    <field name="estado_cita" widget="statusbar" 
+                        statusbar_visible="borrador,confirmada,realizada"/>
+                </header>
+                
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-star" 
+                                invisible="not es_cliente_vip">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text fw-bold">Cliente VIP</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <group>
+                        <group string="Información Principal">
+                            <field name="cliente_id" options="{'no_create': True}"
+                                readonly="estado_cita in ['realizada', 'cancelada']"/>
+                            <field name="estilista_id"
+                                readonly="estado_cita in ['realizada', 'cancelada']"/>
+                            <field name="fecha_inicio"
+                                readonly="estado_cita in ['realizada', 'cancelada']"/>
+                            <field name="fecha_fin" readonly="1" class="text-success fw-bold"/>
+                        </group>
+                        <group string="Resumen de la Cita">
+                            <field name="precio_total" widget="monetary" class="fw-bold" 
+                                readonly="estado_cita in ['realizada', 'cancelada']"/>
+                            <field name="estado_cita" string="Estado"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Servicios">
+                            <field name="servicio_linea_ids" readonly="estado_cita in ['realizada', 'cancelada']">
+                                <list editable="bottom">
+                                    <field name="servicio_id"/>
+                                    <field name="duracion_servicio" widget="float_time" string="Duración"/>
+                                    <field name="precio_unitario" widget="monetary" string="Precio"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Cita Filtro -->
+    <record id="view_peluqueria_cita_search" model="ir.ui.view">
+        <field name="name">peluqueria.cita.search</field>
+        <field name="model">peluqueria.cita</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Citas">
+                <field name="cliente_id"/>
+                <field name="estilista_id"/>
+                <filter string="Citas Activas" name="activas" 
+                        domain="[('estado_cita', '!=', 'cancelada')]"/>
+                
+                <group expand="0" string="Agrupar por">
+                    <filter string="Estilista" name="group_by_estilista" context="{'group_by': 'estilista_id'}"/>
+                    <filter string="Estado" name="group_by_estado" context="{'group_by': 'estado_cita'}"/>
+                    <filter string="Día de la Cita" name="group_by_day" context="{'group_by': 'fecha_inicio:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

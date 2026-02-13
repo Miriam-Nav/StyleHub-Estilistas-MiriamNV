@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción que abre ventana de Servicios. -->
+    <record id="action_peluqueria_servicio" model="ir.actions.act_window">
+        <!-- Nombre -->
+        <field name="name">Servicios</field>
+        <!-- Cuando se ejecuta abre peluqueria.servicio -->
+        <field name="res_model">peluqueria.servicio</field>
+        <!-- Vistas que se muestran y en qué orden. -->
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <!-- Acción que abre ventana de Estilistas. -->
+    <record id="action_peluqueria_estilista" model="ir.actions.act_window">
+        <field name="name">Estilistas</field>
+        <field name="res_model">peluqueria.estilista</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <!-- Acción que abre ventana de Clientes. -->
+    <record id="action_peluqueria_clientes" model="ir.actions.act_window">
+        <field name="name">Clientes</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[
+            ('is_company', '=', False), 
+            ('name', 'not ilike', 'Administrator'),
+            ('name', 'not ilike', 'Simplified Invoice')
+        ]</field>
+        <!-- <field name="context">{'default_is_company': False}</field> -->
+        <field name="view_id" ref="view_peluqueria_res_partner_kanban"/>
+    </record>
+
+    <!-- Acción que abre ventana de Citas. -->
+    <record id="action_peluqueria_cita" model="ir.actions.act_window">
+        <field name="name">Clitas</field>
+        <field name="res_model">peluqueria.cita</field>
+        <field name="view_mode">calendar,kanban,form</field>
+        <field name="context">{'search_default_activas': 1}</field>
+    </record>
+</odoo>

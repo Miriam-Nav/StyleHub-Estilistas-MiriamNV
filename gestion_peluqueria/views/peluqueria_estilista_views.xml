@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Estilista Lista -->
+    <record id="view_peluqueria_estilista_list" model="ir.ui.view">
+        <field name="name">peluqueria.estilista.list</field>
+        <field name="model">peluqueria.estilista</field>
+        <field name="arch" type="xml">
+            <list string="Lista de Estilistas">
+                <field name="foto" widget="image" optional="show"/>
+                <field name="name"/>
+                <field name="telefono"/>
+                <field name="email"/>
+                <field name="total_citas" />
+                <field name="activo"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Estilista Form -->
+    <record id="view_peluqueria_estilista_form" model="ir.ui.view">
+        <field name="name">peluqueria.estilista.form</field>
+        <field name="model">peluqueria.estilista</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <!-- Foto del estilista -->
+                    <field name="foto" widget="image" class="oe_avatar"/>
+                    
+                    <!-- Botón de lista de citas del estilista-->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" 
+                                name="action_ver_citas" icon="fa-calendar">
+                            <field name="total_citas" widget="statinfo" string="Citas"/>
+                        </button>
+                    </div>
+
+                    <!-- Nombre-->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del estilista"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Información Personal">
+                            <field name="telefono" widget="phone"/>
+                            <field name="email" widget="email"/>
+                        </group>
+                        <group string="Estado">
+                            <field name="activo"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Notas / Historial-->
+                    <notebook>
+                        <page string="Notas">
+                            <field name="notas" placeholder="Información adicional sobre el estilista..."/>
+                        </page>
+                        <page string="Historial de Citas">
+                            <field name="cita_ids" readonly="1">
+                                <list>
+                                    <field name="fecha_inicio"/>
+                                    <field name="cliente_id"/>
+                                    <field name="estado_cita"/>
+                                    <field name="precio_total"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Kanban -->
+    <record id="view_peluqueria_estilista_kanban" model="ir.ui.view">
+        <field name="name">peluqueria.estilista.kanban</field>
+        <field name="model">peluqueria.estilista</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="foto"/>
+                <field name="total_citas"/>
+                <field name="activo"/>
+                <templates>
+                    <!-- Diseño -->
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('peluqueria.estilista', 'foto', record.id.raw_value)" class="o_image_64_cover"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                                <ul>
+                                    <li>
+                                        <i class="fa fa-calendar me-2"/> 
+                                        <field name="total_citas"/> citas
+                                    </li>
+                                    <!-- Estilista Inactivo -->
+                                    <li t-if="!record.activo.raw_value" class="text-muted">
+                                        <i class="fa fa-ban me-2"/> Inactivo
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

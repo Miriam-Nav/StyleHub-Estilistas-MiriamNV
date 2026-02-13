@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root -->
+    <menuitem id="menu_peluqueria_root" name="StyleHub"/>
+    <!-- Root/Citas -->
+    <menuitem id="menu_peluqueria_cita" name="Citas" 
+              parent="menu_peluqueria_root" action="action_peluqueria_cita"/>
+    <!-- Root/Configuración -->
+    <menuitem id="menu_peluqueria_config" name="Configuración" 
+              parent="menu_peluqueria_root"/>
+    <!-- Root/Configuración/Servicios -->
+    <menuitem id="menu_peluqueria_servicio" name="Servicios" 
+              parent="menu_peluqueria_config" action="action_peluqueria_servicio"/>
+    <!-- Root/Configuración/Estilistas -->
+    <menuitem id="menu_peluqueria_estilista" name="Estilistas" 
+              parent="menu_peluqueria_config" action="action_peluqueria_estilista"/>
+    <!-- Root/Configuración/Clientes -->
+    <menuitem id="menu_peluqueria_clientes" name="Clientes" 
+              parent="menu_peluqueria_config" action="action_peluqueria_clientes"/>
+</odoo>
